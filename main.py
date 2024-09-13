@@ -18,7 +18,7 @@ INSERT INTO TEAMS (TeamID, TeamNumber)
 VALUES (?, ?)
 '''
 
-data = (1, 1730)
+data = [1, 1730]
 #cursor.execute(insert_team, data)
 connection.commit()
 
