@@ -115,20 +115,58 @@ team_numbers = []  # SCRUBBED: Real team numbers removed for privacy
 
 
 
-for team_number in team_numbers:
-    cursor.execute(insert_team, [team_number])
-connection.commit()
+#for team_number in team_numbers:
+#    cursor.execute(insert_team, [team_number])
+#connection.commit()
 
 insert_match = '''
 INSERT INTO MATCHES (MatchNumber, MatchType, Red1, Red2, Red3, Blue1, Blue2, Blue3)
 VALUES (?,?,?,?,?,?,?,?)
 '''
 
+insert_performance = '''
+INSERT INTO PERFORMANCE (
+    PerformanceID,
+    TeamNumber,
+    MatchNumber,
+    Preload,
+    DriverStation,
+    FieldPosition,
+    AutoNotesMissed,
+    Leave,
+    AutoAmpNotes,
+    AutoAmpNotesMissed,
+    AutoAmpPercentage,
+    AutoSpeakerNotes,
+    AutoSpeakerNotesMissed,
+    AutoSpeakerPercentage,
+    AutoComments,
+    TeleAmpNotes,
+    TeleAmpNotesMissed,
+    TeleAmpPercentage,
+    TeleSpeakerNotes,
+    TeleSpeakerNotesMissed,
+    TeleSpeakerPercentage,
+    Died,
+    Broke,
+    Defense,
+    TeleComments,
+    Cycles,
+    Passes,
+    StageLevel,
+    Harmony,
+    Trap,
+    StageComments,
+    ScoutName
+)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+'''
+
 matches = []  # SCRUBBED: Real match data removed for privacy
 
-for match in matches:
-    cursor.execute(insert_match, [match[0],match[1],match[2],match[3],match[4],match[5],match[6],match[7]])
-connection.commit()
+#for match in matches:
+#    cursor.execute(insert_match, [match[0],match[1],match[2],match[3],match[4],match[5],match[6],match[7]])
+#connection.commit()
 
 cursor.close()
 connection.close()

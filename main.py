@@ -12,13 +12,13 @@ for row in results:
 
     
 
-#update_team = '''
-#UPDATE TEAMS
-#SET TeamNumber = ?
-#WHERE TeamID = ?
-#'''
+update_team = '''
+UPDATE PERFORMANCE
+SET PerformanceID = ?
+WHERE ScoutName = ?
+'''
 
-#data = (254, 4)
+#data = (2, 'Isaac ')
 #cursor.execute(update_team, data)
 #connection.commit()
 
