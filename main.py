@@ -3,7 +3,7 @@ import sqlite3
 connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 
-select_query = 'SELECT * FROM MATCHES'
+select_query = 'SELECT * FROM PERFORMANCE'
 cursor.execute(select_query)
 
 results = cursor.fetchall()
