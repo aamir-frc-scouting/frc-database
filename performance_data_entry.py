@@ -37,7 +37,10 @@ VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 '''
 
 while True:
-    id+=1
+    if id == None:
+        id = 0
+    else:
+        id+=1
     entry = input("Data Entry: ")
     performance = entry.split('*')
     performance.insert(0,id)
