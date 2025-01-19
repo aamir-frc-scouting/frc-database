@@ -14,34 +14,26 @@ INSERT INTO PERFORMANCE (
     Preload,
     DriverStation,
     FieldPosition,
-    AutoNotesMissed,
     Leave,
-    AutoAmpNotes,
-    AutoAmpNotesMissed,
-    AutoAmpPercentage,
-    AutoSpeakerNotes,
-    AutoSpeakerNotesMissed,
-    AutoSpeakerPercentage,
+    AutoTrough,
+    AutoL2,
+    AutoL3,
+    AutoL4,
+    AutoProcessor,
+    AutoNet,
     AutoComments,
-    TeleAmpNotes,
-    TeleAmpNotesMissed,
-    TeleAmpPercentage,
-    TeleSpeakerNotes,
-    TeleSpeakerNotesMissed,
-    TeleSpeakerPercentage,
-    Died,
-    Broke,
-    Defense,
+    TeleTrough,
+    TeleL2,
+    TeleL3,
+    TeleL4,
+    TeleProcessor,
+    TeleNet,
     TeleComments,
-    Cycles,
-    Passes,
-    StageLevel,
-    Harmony,
-    Trap,
-    StageComments,
+    BargeLevel,
+    BargeComments,
     ScoutName
 )
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 '''
 
 while True:
@@ -56,31 +48,23 @@ while True:
         performance[3],  # Preload
         performance[4],  # DriverStation
         performance[5],  # FieldPosition
-        performance[6],  # AutoNotesMissed
-        performance[7],  # Leave
-        performance[8],  # AutoAmpNotes
-        performance[9],  # AutoAmpNotesMissed
-        performance[10], # AutoAmpPercentage
-        performance[11], # AutoSpeakerNotes
-        performance[12], # AutoSpeakerNotesMissed
-        performance[13], # AutoSpeakerPercentage
-        performance[14], # AutoComments
-        performance[15], # TeleAmpNotes
-        performance[16], # TeleAmpNotesMissed
-        performance[17], # TeleAmpPercentage
-        performance[18], # TeleSpeakerNotes
-        performance[19], # TeleSpeakerNotesMissed
-        performance[20], # TeleSpeakerPercentage
-        performance[21], # Died
-        performance[22], # Broke
-        performance[23], # Defense
-        performance[24], # TeleComments
-        performance[25], # Cycles
-        performance[26], # Passes
-        performance[27], # StageLevel
-        performance[28], # Harmony
-        performance[29], # Trap
-        performance[30], # StageComments
-        performance[31]  # ScoutName
+        performance[6],  # Leave
+        performance[7],  # AutoTrough
+        performance[8],  # AutoL2
+        performance[9],  # AutoL3
+        performance[10], # AutoL4
+        performance[11], # AutoProcessor
+        performance[12], # AutoNet
+        performance[13], # AutoComments
+        performance[14], # TeleTrough
+        performance[15], # TeleL2
+        performance[16], # TeleL3
+        performance[17], # TeleL4
+        performance[18], # TeleProcessor
+        performance[19], # TeleNet
+        performance[20], # TeleComments
+        performance[21], # BargeLevel
+        performance[22], # BargeComments
+        performance[23], # ScoutName
     ])
     connection.commit()
