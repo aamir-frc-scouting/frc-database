@@ -1,54 +1,4 @@
-import sqlite3, customtkinter
-
-class App(customtkinter.CTk):
-    def __init__(self):
-        super().__init__()
-
-        self.title("my app")
-        self.geometry("400x150")
-        self.grid_columnconfigure((0, 1), weight=1)
-
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Enter Data Here: ")
-        self.entry.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
-        self.button = customtkinter.CTkEntry(self, text="Save Data", command=insert_data(self))
-
-
-def insert_data(gui):
-    if id == None:
-        id = 0
-    else:
-        id+=1
-    entry = input("Data Entry: ")
-    performance = gui.get().split('*')
-    performance.insert(0,id)
-    cursor.execute(insert_performance, [
-        performance[0],  # PerformanceID
-        performance[1],  # TeamNumber
-        performance[2],  # MatchNumber
-        performance[3],  # Preload
-        performance[4],  # DriverStation
-        performance[5],  # FieldPosition
-        performance[6],  # Leave
-        performance[7],  # AutoTrough
-        performance[8],  # AutoL2
-        performance[9],  # AutoL3
-        performance[10], # AutoL4
-        performance[11], # AutoProcessor
-        performance[12], # AutoNet
-        performance[13], # AutoComments
-        performance[14], # TeleTrough
-        performance[15], # TeleL2
-        performance[16], # TeleL3
-        performance[17], # TeleL4
-        performance[18], # TeleProcessor
-        performance[19], # TeleNet
-        performance[20], # TeleComments
-        performance[21], # BargeLevel
-        performance[22], # BargeComments
-        performance[23], # ScoutName
-    ])
-    connection.commit()
-
+import sqlite3
 connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 select_query = 'SELECT MAX(PerformanceID) FROM PERFORMANCE'
@@ -86,7 +36,38 @@ INSERT INTO PERFORMANCE (
 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 '''
 
-
-
-app = App()
-app.mainloop()
+while True:
+    if id == None:
+        id = 0
+    else:
+        id+=1
+    entry = input("Data Entry: ")
+    performance = entry.split('*')
+    performance.insert(0,id)
+    cursor.execute(insert_performance, [
+        performance[0],  # PerformanceID
+        performance[1],  # TeamNumber
+        performance[2],  # MatchNumber
+        performance[3],  # Preload
+        performance[4],  # DriverStation
+        performance[5],  # FieldPosition
+        performance[6],  # Leave
+        performance[7],  # AutoTrough
+        performance[8],  # AutoL2
+        performance[9],  # AutoL3
+        performance[10], # AutoL4
+        performance[11], # AutoProcessor
+        performance[12], # AutoNet
+        performance[13], # AutoComments
+        performance[14], # TeleTrough
+        performance[15], # TeleL2
+        performance[16], # TeleL3
+        performance[17], # TeleL4
+        performance[18], # TeleProcessor
+        performance[19], # TeleNet
+        performance[20], # TeleComments
+        performance[21], # BargeLevel
+        performance[22], # BargeComments
+        performance[23], # ScoutName
+    ])
+    connection.commit()
