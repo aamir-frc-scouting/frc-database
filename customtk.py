@@ -74,7 +74,13 @@ class App(customtkinter.CTk):
         performance = entry_text.split('*')
         if len(performance) != 23:
             self.status_label.configure(
-                text="Incorrect number of fields. Expected 23 fields.", fg_color="red"
+                text="Incorrect number of fields ("+str(len(performance))+"). Expected 23 fields.", fg_color="red"
+            )
+            return
+        
+        if not performance[1].isnumeric():
+            self.status_label.configure(
+                text="Incorrect type (String). Expected a team NUMBER.", fg_color="red"
             )
             return
 
