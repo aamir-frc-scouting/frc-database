@@ -30,28 +30,32 @@ class App(customtkinter.CTk):
         create_table_query = '''
         CREATE TABLE IF NOT EXISTS PERFORMANCE (
             PerformanceID INTEGER PRIMARY KEY,
-            TeamNumber TEXT,
             MatchNumber TEXT,
+            TeamNumber TEXT,
             Preload TEXT,
             DriverStation TEXT,
             FieldPosition TEXT,
             Leave TEXT,
-            AutoTrough TEXT,
-            AutoL2 TEXT,
-            AutoL3 TEXT,
             AutoL4 TEXT,
+            AutoL3 TEXT,
+            AutoL2 TEXT,
+            AutoTrough TEXT,
             AutoProcessor TEXT,
             AutoNet TEXT,
-            AutoComments TEXT,
-            TeleTrough TEXT,
-            TeleL2 TEXT,
-            TeleL3 TEXT,
+            AutoRemove TEXT,
+            ReefPlacements TEXT,
+            Died TEXT,
+            Broke TEXT,
+            Defense TEXT,
             TeleL4 TEXT,
+            TeleL3 TEXT,
+            TeleL2 TEXT,
+            TeleTrough TEXT,
             TeleProcessor TEXT,
             TeleNet TEXT,
-            TeleComments TEXT,
+            TeleRemove TEXT,
             BargeLevel TEXT,
-            BargeComments TEXT,
+            Comments TEXT,
             ScoutName TEXT
         )
         '''
@@ -72,9 +76,9 @@ class App(customtkinter.CTk):
 
         # Parse and insert data
         performance = entry_text.split('*')
-        if len(performance) != 23:
+        if len(performance) != 28:
             self.status_label.configure(
-                text="Incorrect number of fields ("+str(len(performance))+"). Expected 23 fields.", fg_color="red"
+                text="Incorrect number of fields ("+str(len(performance))+"). Expected 28 fields.", fg_color="red"
             )
             return
         
@@ -90,30 +94,34 @@ class App(customtkinter.CTk):
         insert_performance_query = '''
         INSERT INTO PERFORMANCE (
             PerformanceID,
-            TeamNumber,
             MatchNumber,
+            TeamNumber,
             Preload,
             DriverStation,
             FieldPosition,
             Leave,
-            AutoTrough,
-            AutoL2,
-            AutoL3,
             AutoL4,
+            AutoL3,
+            AutoL2,
+            AutoTrough,
             AutoProcessor,
             AutoNet,
-            AutoComments,
-            TeleTrough,
-            TeleL2,
-            TeleL3,
+            AutoRemove,
+            ReefPlacements,
+            Died,
+            Broke,
+            Defense,
             TeleL4,
+            TeleL3,
+            TeleL2,
+            TeleTrough,
             TeleProcessor,
             TeleNet,
-            TeleComments,
+            TeleRemove,
             BargeLevel,
-            BargeComments,
+            Comments,
             ScoutName
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         '''
 
         try:
