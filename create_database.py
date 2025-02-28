@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS MATCHES (
 create_performance_table = '''
 CREATE TABLE IF NOT EXISTS PERFORMANCE (
     PerformanceID INT PRIMARY KEY,
-    TeamNumber INT,
+    MatchNumber INT,
     MatchNumber	INT,
     Preload BOOLEAN,
     DriverStation TEXT CHECK(DriverStation IN ('Red1', 'Red2', 'Red3', 'Blue1', 'Blue2', 'Blue3')),
