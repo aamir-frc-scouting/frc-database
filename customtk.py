@@ -76,9 +76,9 @@ class App(customtkinter.CTk):
 
         # Parse and insert data
         performance = entry_text.split('*')
-        if len(performance) != 28:
+        if len(performance) != 27:
             self.status_label.configure(
-                text="Incorrect number of fields ("+str(len(performance))+"). Expected 28 fields.", fg_color="red"
+                text="Incorrect number of fields ("+str(len(performance))+"). Expected 27 fields.", fg_color="red"
             )
             return
         
@@ -121,7 +121,7 @@ class App(customtkinter.CTk):
             BargeLevel,
             Comments,
             ScoutName
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         '''
 
         try:

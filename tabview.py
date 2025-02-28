@@ -7,7 +7,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.title("Performance Database Viewer")
-        self.geometry("1000x600")  # Increased window size to fit the side menu
+        self.geometry("1000x600")
 
         # Create a left side menu
         self.create_side_menu()
@@ -25,7 +25,8 @@ class App(customtkinter.CTk):
             "TeleNet", "TeleRemove", "BargeLevel", "Comments", "ScoutName"
         ]
 
-        self.active_filters = []
+        self.columns_visibility = {col: True for col in self.performance_headers}  # Track column visibility
+        self.active_filters = []  # Store active filters
 
         # Treeview widget
         self.table = ttk.Treeview(
@@ -37,7 +38,7 @@ class App(customtkinter.CTk):
 
         # Configure columns and headings
         for col in self.performance_headers:
-            self.table.heading(col, text=col)
+            self.table.heading(col, text=col, anchor="w")
             self.table.column(col, anchor="w", minwidth=100, width=150)
 
         self.table.pack(fill="both", expand=True, padx=10, pady=10)
@@ -58,36 +59,35 @@ class App(customtkinter.CTk):
         self.frame_left = customtkinter.CTkFrame(master=self, width=200, corner_radius=0)
         self.frame_left.pack(side="left", fill="y", padx=20, pady=20)
 
-        # Side menu items
+        # Side menu title
         self.menu_title = customtkinter.CTkLabel(self.frame_left, text="Menu", font=("Arial", 16))
         self.menu_title.pack(pady=10)
 
-        self.btn_view_data = customtkinter.CTkButton(self.frame_left, text="View Data", command=self.view_data)
-        self.btn_view_data.pack(pady=5)
+        # Columns button
+        self.btn_columns = customtkinter.CTkButton(self.frame_left, text="Columns", command=self.columns_popup)
+        self.btn_columns.pack(pady=5)
 
-        self.btn_update_data = customtkinter.CTkButton(self.frame_left, text="Update Data", command=self.update_data)
-        self.btn_update_data.pack(pady=5)
-
-        self.btn_delete_data = customtkinter.CTkButton(self.frame_left, text="Delete Data", command=self.delete_data)
-        self.btn_delete_data.pack(pady=5)
-
-        self.btn_filter_data = customtkinter.CTkButton(self.frame_left, text="Filter Data", command=self.filter_data)
-        self.btn_filter_data.pack(pady=5)
-
-        self.btn_add_filter = customtkinter.CTkButton(self.frame_left, text="Add Filter", command=self.add_filter)
-        self.btn_add_filter.pack(pady=5)
-
-        self.btn_clear_filters = customtkinter.CTkButton(self.frame_left, text="Clear Filters", command=self.clear_filters)
-        self.btn_clear_filters.pack(pady=5)
-
-        self.btn_view_active_filters = customtkinter.CTkButton(self.frame_left, text="View Active Filters", command=self.view_active_filters)
-        self.btn_view_active_filters.pack(pady=5)
+        # Filters button
+        self.btn_filters = customtkinter.CTkButton(self.frame_left, text="Filters", command=self.filters_popup)
+        self.btn_filters.pack(pady=5)
 
     def load_data(self):
         connection = sqlite3.connect('database.db')
         cursor = connection.cursor()
         select_query = 'SELECT * FROM PERFORMANCE'
-        cursor.execute(select_query)
+        
+        # Apply filters to query if any are active
+        if self.active_filters:
+            filter_clauses = []
+            filter_values = []
+            for field, value in self.active_filters:
+                filter_clauses.append(f"{field} LIKE ?")
+                filter_values.append(f"%{value}%")
+            select_query += " WHERE " + " AND ".join(filter_clauses)
+            cursor.execute(select_query, filter_values)
+        else:
+            cursor.execute(select_query)
+        
         results = cursor.fetchall()
         self.table.delete(*self.table.get_children())
         for row in results:
@@ -95,85 +95,111 @@ class App(customtkinter.CTk):
         cursor.close()
         connection.close()
 
-    def filter_data(self):
+    def update_table_columns(self):
+        visible_columns = [col for col in self.performance_headers if self.columns_visibility[col]]
+        self.table['displaycolumns'] = visible_columns if visible_columns else self.performance_headers
+
+    def columns_popup(self):
         popup = customtkinter.CTkToplevel(self)
-        popup.title("Filter Data")
-        popup.geometry("400x400")
-        label = customtkinter.CTkLabel(popup, text="Select Columns to Display:")
-        label.pack(pady=10)
-        selected_columns = {}
+        popup.title("Select Columns")
+        popup.geometry("400x900")
 
-        def select_all():
-            for var in selected_columns.values():
-                var.set(1)
+        # Column selection
+        label_columns = customtkinter.CTkLabel(popup, text="Select Columns to Display:")
+        label_columns.pack(pady=10)
 
-        def apply_filter():
-            visible_columns = [col for col, var in selected_columns.items() if var.get() == 1]
-            self.table['displaycolumns'] = visible_columns if visible_columns else self.performance_headers
-            popup.destroy()
+        # Create a dictionary to store the checkbox variables
+        checkbox_vars = {}
 
+        def toggle_column_visibility(col):
+            self.columns_visibility[col] = not self.columns_visibility[col]
+            self.update_table_columns()
+
+        # Create checkboxes for each column
         for col in self.performance_headers:
-            var = customtkinter.IntVar()
-            selected_columns[col] = var
-            checkbox = customtkinter.CTkCheckBox(popup, text=col, variable=var)
+            var = customtkinter.IntVar(value=1 if self.columns_visibility[col] else 0)
+            checkbox_vars[col] = var
+            checkbox = customtkinter.CTkCheckBox(popup, text=col, variable=var, command=lambda col=col: toggle_column_visibility(col))
             checkbox.pack(anchor="w", padx=10)
 
+        # Buttons
+        def select_all():
+            # Set all checkbox values to 1 and update column visibility
+            for col, var in checkbox_vars.items():
+                var.set(1)
+                self.columns_visibility[col] = True
+            self.update_table_columns()
+
+        def deselect_all():
+            # Set all checkbox values to 0 and update column visibility
+            for col, var in checkbox_vars.items():
+                var.set(0)
+                self.columns_visibility[col] = False
+            self.update_table_columns()
+
+        # Button to select all columns
         btn_select_all = customtkinter.CTkButton(popup, text="Select All", command=select_all)
         btn_select_all.pack(pady=10)
 
-        btn_apply = customtkinter.CTkButton(popup, text="Apply Filter", command=apply_filter)
-        btn_apply.pack(pady=10)
+        # Button to deselect all columns
+        btn_deselect_all = customtkinter.CTkButton(popup, text="Deselect All", command=deselect_all)
+        btn_deselect_all.pack(pady=10)
 
+        # Close button
         close_button = customtkinter.CTkButton(popup, text="Close", command=popup.destroy)
         close_button.pack(pady=10)
 
-    def add_filter(self):
+    def filters_popup(self):
         popup = customtkinter.CTkToplevel(self)
-        popup.title("Add Filter")
-        popup.geometry("400x200")
-        label = customtkinter.CTkLabel(popup, text="Select Field and Enter Value:")
-        label.pack(pady=10)
+        popup.title("Manage Filters")
+        popup.geometry("400x600")
+
+        # Filter input section
+        label_filter = customtkinter.CTkLabel(popup, text="Create Filter:")
+        label_filter.pack(pady=10)
+
         field_var = customtkinter.StringVar()
         field_dropdown = customtkinter.CTkComboBox(popup, variable=field_var, values=self.performance_headers)
         field_dropdown.pack(pady=5)
+
         value_entry = customtkinter.CTkEntry(popup)
         value_entry.pack(pady=5)
 
+        # Function to apply filter
         def apply_filter():
             field = field_var.get()
             value = value_entry.get()
             if field and value:
                 self.active_filters.append((field, value))
-                self.load_filtered_data()
+                self.load_data()
             popup.destroy()
 
-        btn_apply = customtkinter.CTkButton(popup, text="Apply Filter", command=apply_filter)
-        btn_apply.pack(pady=10)
+        # Button to apply filter
+        btn_apply_filter = customtkinter.CTkButton(popup, text="Apply Filter", command=apply_filter)
+        btn_apply_filter.pack(pady=10)
 
-    def clear_filters(self):
-        self.active_filters.clear()
-        self.load_data()
+        # Active filters section
+        label_active_filters = customtkinter.CTkLabel(popup, text="Active Filters:")
+        label_active_filters.pack(pady=10)
 
-    def view_active_filters(self):
-        popup = customtkinter.CTkToplevel(self)
-        popup.title("Active Filters")
-        popup.geometry("400x300")
-        label = customtkinter.CTkLabel(popup, text="Current Active Filters:")
-        label.pack(pady=10)
+        def delete_filter(field_to_delete):
+            self.active_filters = [(field, value) for field, value in self.active_filters if field != field_to_delete]
+            self.load_data()
+
         for field, value in self.active_filters:
-            filter_label = customtkinter.CTkLabel(popup, text=f"{field}: {value}")
-            filter_label.pack(anchor="w")
+            filter_frame = customtkinter.CTkFrame(popup)
+            filter_frame.pack(pady=5)
+
+            filter_label = customtkinter.CTkLabel(filter_frame, text=f"{field}: {value}")
+            filter_label.pack(side="left", padx=10)
+
+            # Button to delete filter
+            btn_delete = customtkinter.CTkButton(filter_frame, text="Delete", command=lambda f=field: delete_filter(f))
+            btn_delete.pack(side="right", padx=10)
+
+        # Close button
         close_button = customtkinter.CTkButton(popup, text="Close", command=popup.destroy)
         close_button.pack(pady=10)
-
-    def view_data(self):
-        print("View Data Button Pressed")
-
-    def update_data(self):
-        print("Update Data Button Pressed")
-
-    def delete_data(self):
-        print("Delete Data Button Pressed")
 
 app = App()
 app.mainloop()
