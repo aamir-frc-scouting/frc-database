@@ -1,9 +1,9 @@
 import sqlite3
 
-connection = sqlite3.connect('database.db')
+connection = sqlite3.connect('pit_scouting.db')
 cursor = connection.cursor()
 
-select_query = 'SELECT * FROM PERFORMANCE'
+select_query = 'SELECT * FROM PitScouting'
 cursor.execute(select_query)
 
 performance_headers = ["PerformanceID",
