@@ -18,15 +18,16 @@ class App(customtkinter.CTk):
 
         # Treeview columns
         self.performance_headers = [
-            "PerformanceID", "MatchNumber", "TeamNumber", "Preload", "DriverStation",
-            "FieldPosition", "Leave", "AutoL4", "AutoL3", "AutoL2", "AutoTrough",
-            "AutoProcessor", "AutoNet", "AutoRemove", "ReefPlacements", "Died", "Broke",
-            "Defense", "TeleL4", "TeleL3", "TeleL2", "TeleTrough", "TeleProcessor",
-            "TeleNet", "TeleRemove", "BargeLevel", "Comments", "ScoutName"
-        ]
+    "PerformanceID", "MatchNumber", "TeamNumber", "Preload", "DriverStation",
+    "FieldPosition", "Leave", "Auto", "Died", "Broke", "Defense",
+    "TeleL4", "TeleL3", "TeleL2", "TeleTrough", "TeleProcessor",
+    "TeleNet", "TeleTakeOff", "TeleMissed", "BargeLevel",
+    "Comments", "CoralCycles", "EffectiveCycles", "ScoutName"
+]
 
         self.columns_visibility = {col: True for col in self.performance_headers}  # Track column visibility
         self.active_filters = []  # Store active filters
+        self.sort_orders = {col: True for col in self.performance_headers}  # Track sorting order
 
         # Treeview widget
         self.table = ttk.Treeview(
@@ -38,8 +39,8 @@ class App(customtkinter.CTk):
 
         # Configure columns and headings
         for col in self.performance_headers:
-            self.table.heading(col, text=col, anchor="w")
-            self.table.column(col, anchor="w", minwidth=100, width=150)
+            self.table.heading(col, text=col, anchor="w", command=lambda c=col: self.sort_column(c))
+            self.table.column(col, anchor="w", width=150, stretch=False)  # Allow independent resizing
 
         self.table.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -53,6 +54,22 @@ class App(customtkinter.CTk):
 
         # Load data from database
         self.load_data()
+
+    def sort_column(self, col):
+        self.sort_orders[col] = not self.sort_orders[col]  # Toggle sorting order
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        order = "ASC" if self.sort_orders[col] else "DESC"
+        cursor.execute(f'SELECT * FROM PERFORMANCE ORDER BY {col} {order}')
+        rows = cursor.fetchall()
+        self.table.delete(*self.table.get_children())
+        for row in rows:
+            self.table.insert("", "end", values=row)
+        connection.close()
+
+    def update_table_columns(self):
+        visible_columns = [col for col in self.performance_headers if self.columns_visibility[col]]
+        self.table['displaycolumns'] = visible_columns if visible_columns else self.performance_headers
 
     def create_side_menu(self):
         # Side menu frame
@@ -70,6 +87,10 @@ class App(customtkinter.CTk):
         # Filters button
         self.btn_filters = customtkinter.CTkButton(self.frame_left, text="Filters", command=self.filters_popup)
         self.btn_filters.pack(pady=5)
+
+        # View Data button
+        self.btn_view_data = customtkinter.CTkButton(self.frame_left, text="View Data", command=self.view_data_popup)
+        self.btn_view_data.pack(pady=5)  # Add the button for viewing match data
 
     def load_data(self):
         connection = sqlite3.connect('database.db')
@@ -98,6 +119,101 @@ class App(customtkinter.CTk):
     def update_table_columns(self):
         visible_columns = [col for col in self.performance_headers if self.columns_visibility[col]]
         self.table['displaycolumns'] = visible_columns if visible_columns else self.performance_headers
+
+    def display_results(self, title, results):
+        results_popup = customtkinter.CTkToplevel(self)
+        results_popup.title(title)
+        results_popup.geometry("600x400")
+
+        frame = customtkinter.CTkFrame(results_popup)
+        frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        table = ttk.Treeview(frame, columns=[str(i) for i in range(len(results[0]))], show="headings")
+        
+        for i in range(len(results[0])):
+            table.heading(str(i), text=f"Column {i}", anchor="w")
+            table.column(str(i), anchor="w", width=100, stretch=True)
+
+        for row in results:
+            table.insert("", "end", values=row)
+        
+        table.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        close_button = customtkinter.CTkButton(results_popup, text="Close", command=results_popup.destroy)
+        close_button.pack(pady=10)
+
+
+    def show_max(self, popup):
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        
+        query = '''
+        SELECT TeamNumber,
+            MAX(TeleL4), MAX(TeleL3), MAX(TeleL2), MAX(TeleTrough), MAX(TeleProcessor), 
+            MAX(TeleNet), MAX(TeleTakeOff), MAX(TeleMissed)
+        FROM PERFORMANCE
+        GROUP BY TeamNumber
+        '''
+        
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        popup.destroy()
+        self.display_results("Max Per Team", results)
+        
+        connection.close()
+
+    def show_averages(self, popup):
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        
+        query = '''
+        SELECT TeamNumber,
+            AVG(TeleL4), AVG(TeleL3), AVG(TeleL2), AVG(TeleTrough), AVG(TeleProcessor), 
+            AVG(TeleNet), AVG(TeleTakeOff), AVG(TeleMissed)
+        FROM PERFORMANCE
+        GROUP BY TeamNumber
+        '''
+        
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        popup.destroy()
+        self.display_results("Averages Per Team", results)
+        
+        connection.close()
+
+    def show_all_matches(self, popup):
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        
+        cursor.execute("SELECT * FROM PERFORMANCE")
+        results = cursor.fetchall()
+        
+        popup.destroy()
+        self.display_results("All Matches", results)
+        
+        connection.close()
+
+    def view_data_popup(self):
+        popup = customtkinter.CTkToplevel(self)
+        popup.title("View Data")
+        popup.geometry("400x300")
+
+        label = customtkinter.CTkLabel(popup, text="Choose an option:", font=("Arial", 14))
+        label.pack(pady=10)
+
+        btn_all_matches = customtkinter.CTkButton(popup, text="Show All Matches", command=lambda: self.show_all_matches(popup))
+        btn_all_matches.pack(pady=5)
+
+        btn_avg_per_team = customtkinter.CTkButton(popup, text="Show Averages Per Team", command=lambda: self.show_averages(popup))
+        btn_avg_per_team.pack(pady=5)
+
+        btn_max_per_team = customtkinter.CTkButton(popup, text="Show Max Per Team", command=lambda: self.show_max(popup))
+        btn_max_per_team.pack(pady=5)
+
+        close_button = customtkinter.CTkButton(popup, text="Close", command=popup.destroy)
+        close_button.pack(pady=10)
 
     def columns_popup(self):
         popup = customtkinter.CTkToplevel(self)
