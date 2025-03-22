@@ -9,7 +9,7 @@ def save_to_excel(formatted_data):
     data_list = formatted_data.split('*')
 
     # Check if the file exists
-    file_path = "scouting_data.xlsx"
+    file_path = "scouting_data2.xlsx"
     if os.path.exists(file_path):
         try:
             # Open the existing workbook
@@ -51,11 +51,11 @@ def open_excel():
     try:
         # Open the Excel file based on the operating system
         if platform.system() == "Windows":
-            os.startfile("scouting_data.xlsx")
+            os.startfile("scouting_data2.xlsx")
         elif platform.system() == "Darwin":  # macOS
-            os.system("open scouting_data.xlsx")
+            os.system("open scouting_data2.xlsx")
         else:  # Linux
-            os.system("xdg-open scouting_data.xlsx")
+            os.system("xdg-open scouting_data2.xlsx")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred while opening the file: {e}")
 
