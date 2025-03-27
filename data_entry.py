@@ -30,31 +30,31 @@ class App(customtkinter.CTk):
     def initialize_database(self):
         try:
             create_table_query = '''
-            CREATE TABLE IF NOT EXISTS PERFORMANCE (
-                PerformanceID INTEGER PRIMARY KEY,
-                MatchNumber TEXT,
-                TeamNumber TEXT,
+            CREATE TABLE IF NOT EXISTS SCOUTING (
+                ID INTEGER PRIMARY KEY,
+                Match INTEGER,
+                Team INTEGER,
                 Preload TEXT,
-                DriverStation TEXT,
-                FieldPosition TEXT,
+                Station TEXT,
+                Position TEXT,
                 Leave TEXT,
                 Auto TEXT,
+                Count INTEGER,
                 Died TEXT,
                 Broke TEXT,
                 Defense TEXT,
-                TeleL4 TEXT,
-                TeleL3 TEXT,
-                TeleL2 TEXT,
-                TeleTrough TEXT,
-                TeleProcessor TEXT,
-                TeleNet TEXT,
-                TeleTakeOff TEXT,
-                TeleMissed TEXT,
-                BargeLevel TEXT,
+                L4 INTEGER,
+                L3 INTEGER,
+                L2 INTEGER,
+                Trough INTEGER,
+                Processor INTEGER,
+                Net INTEGER,
+                TakenOff INTEGER,
+                Missed INTEGER,
+                Barge TEXT,
                 Comments TEXT,
-                CoralCycles TEXT,
-                EffectiveCycles TEXT,
-                ScoutName TEXT
+                Cycles INTEGER,
+                Name TEXT
             )
             '''
             self.cursor.execute(create_table_query)
@@ -62,9 +62,9 @@ class App(customtkinter.CTk):
         except Exception as e:
             print(f"Error initializing database: {str(e)}")
     
-    def get_next_performance_id(self):
+    def get_next_id(self):
         try:
-            select_query = 'SELECT MAX(PerformanceID) FROM PERFORMANCE'
+            select_query = 'SELECT MAX(ID) FROM SCOUTING'
             self.cursor.execute(select_query)
             result = self.cursor.fetchone()
             return 0 if result[0] is None else result[0] + 1
@@ -79,59 +79,55 @@ class App(customtkinter.CTk):
             return
         
         performance = entry_text.split('*')
-        if len(performance) != 27:
+        if len(performance) != 23:
             self.status_label.configure(
-                text=f"Incorrect number of fields ({len(performance)}). Expected 27 fields.", fg_color="red"
+                text=f"Incorrect number of fields ({len(performance)}). Expected 23 fields.", fg_color="red"
             )
             return
         
-        if not performance[1].isdigit():
+        if not performance[0].isdigit() or not performance[1].isdigit:
             self.status_label.configure(
-                text="Invalid input: Team number must be numeric.", fg_color="red"
+                text="Invalid input: Match number and team number must be numeric.", fg_color="red"
             )
             return
         
-        performance_id = self.get_next_performance_id()
-        if performance_id is None:
+        id = self.get_next_id()
+        if id is None:
             return  # Error message already set in get_next_performance_id()
         
-        performance.insert(0, performance_id)  # Add PerformanceID to the data
+        performance.insert(0, id)  # Add PerformanceID to the data
         
-        insert_performance_query = '''
-        INSERT INTO PERFORMANCE (
-            PerformanceID,
-            MatchNumber,
-            TeamNumber,
+        insert_query = '''
+        INSERT INTO SCOUTING (
+            ID,
+            Match,
+            Team,
             Preload,
-            DriverStation,
-            FieldPosition,
+            Station,
+            Position,
             Leave,
-            AutoL4,
-            AutoL3,
-            AutoL2,
-            AutoTrough,
-            AutoProcessor,
-            AutoNet,
-            AutoRemove,
-            ReefPlacements,
+            Auto,
+            Count,
             Died,
             Broke,
             Defense,
-            TeleL4,
-            TeleL3,
-            TeleL2,
-            TeleTrough,
-            TeleProcessor,
-            TeleNet,
-            TeleRemove,
-            BargeLevel,
+            L4,
+            L3,
+            L2,
+            Trough,
+            Processor,
+            Net,
+            TakenOff,
+            Missed,
+            Barge,
             Comments,
-            ScoutName
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            Cycles,
+            Name
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         '''
 
         try:
-            self.cursor.execute(insert_performance_query, performance)
+            self.cursor.execute(insert_query, performance)
             self.connection.commit()
             self.status_label.configure(text="Data saved successfully!", fg_color="green")
             self.entry.delete(0, 'end')  # Clear the entry field
