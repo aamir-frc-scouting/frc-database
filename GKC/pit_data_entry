@@ -5,18 +5,18 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         
-        self.title("Data Entry")
+        self.title("Pit Data Entry")
         self.geometry("600x400")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure((0, 1), weight=1)
         
         # Database setup
-        self.connection = sqlite3.connect('database.db')
+        self.connection = sqlite3.connect('scouting_database.db')
         self.cursor = self.connection.cursor()
         self.initialize_database()
         
         # UI Components
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="Enter data (use * to separate fields):")
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="Enter data:")
         self.entry.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
         
         self.button = customtkinter.CTkButton(self, text="Save Data", command=self.button_callback)
@@ -30,31 +30,47 @@ class App(customtkinter.CTk):
     def initialize_database(self):
         try:
             create_table_query = '''
-            CREATE TABLE IF NOT EXISTS SCOUTING (
+            CREATE TABLE IF NOT EXISTS PIT_SCOUTING (
                 ID INTEGER PRIMARY KEY,
-                Match INTEGER,
-                Team INTEGER,
-                Preload TEXT,
-                Station TEXT,
-                Position TEXT,
-                Leave TEXT,
-                Auto TEXT,
-                Count INTEGER,
-                Died TEXT,
-                Broke TEXT,
-                Defense TEXT,
-                L4 INTEGER,
-                L3 INTEGER,
-                L2 INTEGER,
-                Trough INTEGER,
-                Processor INTEGER,
-                Net INTEGER,
-                TakenOff INTEGER,
-                Missed INTEGER,
-                Barge TEXT,
+                TeamName TEXT,
+                TeamNumber TEXT,
+                Weight TEXT,
+                Dimensions TEXT,
+                Cycles TEXT,
+                Mechanisms TEXT,
+                DrivetrainMotors TEXT,
+                Hotswappable TEXT,
+                ClimbTime TEXT,
+                AutoStart TEXT,
+                VisionTracking TEXT,
+                ProgrammingLanguage TEXT,
+                AutoInfo TEXT,
+                BestAt TEXT,
                 Comments TEXT,
-                Cycles INTEGER,
-                Name TEXT
+                DrivetrainValue TEXT,
+                SwerveValue TEXT,
+                SDSValue TEXT,
+                WCPValue TEXT,
+                ThriftyBotValue TEXT,
+                TroughValue TEXT,
+                L2Value TEXT,
+                L3Value TEXT,
+                L4Value TEXT,
+                NetValue TEXT,
+                ProcessorValue TEXT,
+                TakeOffAlgaeValue TEXT,
+                GroundPickUpValue TEXT,
+                StationPickUpValue TEXT,
+                Level TEXT,
+                AutoScoreAlgaeValue TEXT,
+                AutoScoreCoralValue TEXT,
+                LeaveValue TEXT,
+                AutoTakeOffAlgae TEXT,
+                ProcessorHPValue TEXT,
+                StationHPValue TEXT,
+                DefenseValue TEXT,
+                DriveTeamSwitchValue TEXT,
+                PictureValue TEXT
             )
             '''
             self.cursor.execute(create_table_query)
@@ -64,7 +80,7 @@ class App(customtkinter.CTk):
     
     def get_next_id(self):
         try:
-            select_query = 'SELECT MAX(ID) FROM SCOUTING'
+            select_query = 'SELECT MAX(ID) FROM PIT_SCOUTING'
             self.cursor.execute(select_query)
             result = self.cursor.fetchone()
             return 0 if result[0] is None else result[0] + 1
@@ -79,9 +95,9 @@ class App(customtkinter.CTk):
             return
         
         performance = entry_text.split('*')
-        if len(performance) != 23:
+        if len(performance) != 39:
             self.status_label.configure(
-                text=f"Incorrect number of fields ({len(performance)}). Expected 23 fields.", fg_color="red"
+                text=f"Incorrect number of fields ({len(performance)}). Expected 39 fields.", fg_color="red"
             )
             return
         
@@ -98,32 +114,48 @@ class App(customtkinter.CTk):
         performance.insert(0, id)  # Add PerformanceID to the data
         
         insert_query = '''
-        INSERT INTO SCOUTING (
+        INSERT INTO PIT_SCOUTING (
             ID,
-            Match,
-            Team,
-            Preload,
-            Station,
-            Position,
-            Leave,
-            Auto,
-            Count,
-            Died,
-            Broke,
-            Defense,
-            L4,
-            L3,
-            L2,
-            Trough,
-            Processor,
-            Net,
-            TakenOff,
-            Missed,
-            Barge,
-            Comments,
+            TeamName,
+            TeamNumber,
+            Weight,
+            Dimensions,
             Cycles,
-            Name
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            Mechanisms,
+            DrivetrainMotors,
+            Hotswappable,
+            ClimbTime,
+            AutoStart,
+            VisionTracking,
+            ProgrammingLanguage,
+            AutoInfo,
+            BestAt,
+            Comments,
+            DrivetrainValue,
+            SwerveValue,
+            SDSValue,
+            WCPValue,
+            ThriftyBotValue,
+            TroughValue,
+            L2Value,
+            L3Value,
+            L4Value,
+            NetValue,
+            ProcessorValue,
+            TakeOffAlgaeValue,
+            GroundPickUpValue,
+            StationPickUpValue,
+            Level,
+            AutoScoreAlgaeValue,
+            AutoScoreCoralValue,
+            LeaveValue,
+            AutoTakeOffAlgae,
+            ProcessorHPValue,
+            StationHPValue,
+            DefenseValue,
+            DriveTeamSwitchValue,
+            PictureValue
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         '''
 
         try:
