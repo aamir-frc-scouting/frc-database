@@ -100,13 +100,13 @@ class App(customtkinter.CTk):
                 text=f"Incorrect number of fields ({len(performance)}). Expected 39 fields.", fg_color="red"
             )
             return
-        
+        '''
         if not performance[0].isdigit() or not performance[1].isdigit:
             self.status_label.configure(
                 text="Invalid input: Match number and team number must be numeric.", fg_color="red"
             )
             return
-        
+        '''
         id = self.get_next_id()
         if id is None:
             return  # Error message already set in get_next_performance_id()
