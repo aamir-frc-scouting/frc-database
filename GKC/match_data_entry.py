@@ -42,7 +42,8 @@ class App(customtkinter.CTk):
                 Count INTEGER,
                 Died TEXT,
                 Broke TEXT,
-                Defense TEXT,
+                PlayedDefense TEXT,
+                FacedDefense TEXT,
                 L4 INTEGER,
                 L3 INTEGER,
                 L2 INTEGER,
@@ -79,9 +80,9 @@ class App(customtkinter.CTk):
             return
         
         performance = entry_text.split('*')
-        if len(performance) != 23:
+        if len(performance) != 24:
             self.status_label.configure(
-                text=f"Incorrect number of fields ({len(performance)}). Expected 23 fields.", fg_color="red"
+                text=f"Incorrect number of fields ({len(performance)}). Expected 24 fields.", fg_color="red"
             )
             return
         
@@ -110,7 +111,8 @@ class App(customtkinter.CTk):
             Count,
             Died,
             Broke,
-            Defense,
+            PlayedDefense,
+            FacedDefense,
             L4,
             L3,
             L2,

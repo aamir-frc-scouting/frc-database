@@ -93,7 +93,7 @@ class App(customtkinter.CTk):
         if not entry_text:
             self.status_label.configure(text="Please enter data.", fg_color="red")
             return
-        
+        entry_text = entry_text.replace("      ", "")
         performance = entry_text.split('*')
         if len(performance) != 39:
             self.status_label.configure(
