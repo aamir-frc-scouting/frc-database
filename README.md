@@ -32,6 +32,16 @@ flowchart LR
 5. **Database insert** — Valid data is inserted into SQLite with auto-incrementing ID
 6. **Strategy meetings** — Team uses the collected data for alliance selection and match strategy
 
+## Screenshots
+
+The intake app after saving a scanned match (sample data, fake team 99901):
+
+![Match Data Entry intake app](docs/screenshots/intake-app-ui.png)
+
+The resulting `MATCH_SCOUTING` table open in DBeaver (sample database, fake 9990x teams):
+
+![MATCH_SCOUTING in DBeaver](docs/screenshots/dbeaver-match-scouting.png)
+
 ## Database Schema
 
 ### MATCH_SCOUTING Table
