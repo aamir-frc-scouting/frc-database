@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![customtkinter](https://img.shields.io/badge/customtkinter-1F6FEB?style=for-the-badge)](https://github.com/TomSchimansky/CustomTkinter)
 [![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![FRC 2025](https://img.shields.io/badge/FRC-2025_Reefscape-0077C8?style=for-the-badge)](https://www.firstinspires.org/robotics/frc)
+[![FRC 2025](https://img.shields.io/badge/FRC-2025_Reefscape-0077C8?style=for-the-badge)](https://firstfrc.blob.core.windows.net/frc2025/Manual/2025GameManual.pdf)
 
 **Scans scout QR codes from the 2025 Flutter apps into SQLite so strategy questions become SQL queries.**
 
@@ -19,7 +19,7 @@
 
 Senior year, 2025, I wanted a more professional setup than the QR-into-Excel workflow we'd been using. The Flutter apps still export QR codes—that part works great—but dumping everything into spreadsheets was limiting. This Python/customtkinter intake app scans those QR strings, validates the field count, and inserts directly into SQLite. Now strategy questions are just SQL queries, and DBeaver gives us a real database interface.
 
-I first got into scouting as a freshman in 2022, learning from seniors Heath Crump and Caden Findlay on a team that reached Einstein. Sophomore and junior years I built the Android Java match and pit apps myself. QR transfer was never eliminated—it's reliable and offline-first—but the backend finally caught up.
+I first got into scouting as a freshman in 2022, learning from seniors Heath Crump and Caden Findlay on a [team that reached Einstein](https://www.thebluealliance.com/event/2022cmptx). Sophomore and junior years I built the Android Java match and pit apps myself. QR transfer was never eliminated—it's reliable and offline-first—but the backend finally caught up. This system ran at [Heartland Regional](https://www.thebluealliance.com/event/2025ksla), [Greater Kansas City Regional](https://www.thebluealliance.com/event/2025mokc), and [Houston Championship — Newton Division](https://www.thebluealliance.com/event/2025new).
 
 — [Aamir Abatiyow](https://github.com/AamirAbatiyow)
 
@@ -34,12 +34,14 @@ I first got into scouting as a freshman in 2022, learning from seniors Heath Cru
 
 ## Screenshots
 
+<div align="center">
 <table>
   <tr>
     <td align="center"><img src="docs/screenshots/intake-app-ui.png" width="420"/><br/><b>Match Data Entry</b><br/><sub>CustomTkinter intake app after saving a scanned match (sample data, fake team 99901)</sub></td>
     <td align="center"><img src="docs/screenshots/dbeaver-match-scouting.png" width="420"/><br/><b>DBeaver Query View</b><br/><sub>MATCH_SCOUTING table with sample data (fake 9990x teams)</sub></td>
   </tr>
 </table>
+</div>
 
 ## Architecture
 
