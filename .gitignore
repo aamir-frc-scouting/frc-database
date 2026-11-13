@@ -1,0 +1,41 @@
+# Data files (scouting databases contain sensitive scout comments)
+*.xlsx
+*.xls
+*.numbers
+*.csv
+
+# Scouting databases (exclude from version control)
+scouting_database.db
+pit_scouting.db
+database.db
+*database*.db
+
+# Keep team_stats.db (public Statbotics data for fantasy tournament)
+!team_stats.db
+
+# Keep sample data for demos
+!sample_data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
