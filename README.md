@@ -17,20 +17,20 @@
 
 ## Background
 
-Senior year, 2025, I wanted a more professional setup than the QR-into-Excel workflow we'd been using. The Flutter apps still export QR codes—that part works great—but dumping everything into spreadsheets was limiting. This Python/customtkinter intake app scans those QR strings, validates the field count, and inserts directly into SQLite. Now strategy questions are just SQL queries, and DBeaver gives us a real database interface.
+Senior year, 2025, I wanted a more professional setup than the QR-into-Excel workflow we'd been using, where analysis meant filtering and pivot tables. The Flutter apps still export QR codes, but spreadsheets were limiting. This Python/customtkinter intake app takes those QR strings, validates the field count, and inserts directly into SQLite. Strategy questions became SQL queries, and DBeaver gave us a real database interface.
 
-I first got into scouting as a freshman in 2022, learning from seniors Heath Crump and Caden Findlay on a [team that reached Einstein](https://www.thebluealliance.com/event/2022cmptx). Sophomore and junior years I built the Android Java match and pit apps myself. QR transfer was never eliminated—it's reliable and offline-first—but the backend finally caught up. This system ran at [Heartland Regional](https://www.thebluealliance.com/event/2025ksla), [Greater Kansas City Regional](https://www.thebluealliance.com/event/2025mokc), and [Houston Championship — Newton Division](https://www.thebluealliance.com/event/2025new).
+I first got into scouting as a freshman in 2022, learning from seniors Heath Crump and Caden Findlay on a [team that reached Einstein](https://www.thebluealliance.com/event/2022cmptx). Sophomore and junior years I built the Android Java match and pit apps myself. QR transfer was never eliminated because it is reliable and works offline, but the backend caught up. At the [Heartland Regional](https://www.thebluealliance.com/event/2025ksla), scanned QR strings still went into Excel through a Python script (`old/scout_excel.py`). The SQLite intake app ran from the [Greater Kansas City Regional](https://www.thebluealliance.com/event/2025mokc) through the [Houston Championship, Newton Division](https://www.thebluealliance.com/event/2025new).
 
-— [Aamir Abatiyow](https://github.com/AamirAbatiyow)
+[Aamir Abatiyow](https://github.com/AamirAbatiyow)
 
 ## Features
 
-- **QR code intake** — Paste the `*`-delimited QR string, validate field count, insert into SQLite
-- **Match data entry** (`GKC/match_data_entry.py`) — CustomTkinter GUI for importing match scouting data
-- **Pit data entry** (`GKC/pit_data_entry`) — GUI for importing pit scouting information
-- **Statbotics integration** (`statbotics_db.py`) — Fetches public team statistics from the [Statbotics API](https://www.statbotics.io/)
-- **Offline-first** — No network required during competition; QR codes transfer data between tablets and the intake laptop
-- **SQL-queryable** — Strategy questions become `SELECT` statements; export to CSV for alliance selection meetings
+- **QR code intake**: Paste the `*`-delimited QR string, validate field count, insert into SQLite
+- **Match data entry** (`GKC/match_data_entry.py`): CustomTkinter GUI for importing match scouting data
+- **Pit data entry** (`GKC/pit_data_entry`): GUI for importing pit scouting information
+- **Statbotics integration** (`statbotics_db.py`): Fetches public team statistics from the [Statbotics API](https://www.statbotics.io/)
+- **Offline-first**: No network required during competition. QR codes transfer data between tablets and the intake laptop
+- **SQL-queryable**: Strategy questions become `SELECT` statements, and DBeaver can export results for alliance selection meetings
 
 ## Screenshots
 
@@ -72,9 +72,9 @@ flowchart LR
 1. **Scouts use Flutter apps** on tablets to record match/pit observations
 2. **App generates QR code** encoding all fields with `*` delimiters
 3. **Scan or paste** the QR string into the intake app's text entry
-4. **Validation** — App splits on `*`, checks for exactly 23 fields (match) or 39 fields (pit)
-5. **Database insert** — Valid data inserted into SQLite with auto-incrementing ID
-6. **Query & analyze** — Use DBeaver or raw SQL for alliance selection and match strategy
+4. **Validation**: App splits on `*` and rejects any record whose field count doesn't match the match or pit layout
+5. **Database insert**: Valid data inserted into SQLite with auto-incrementing ID
+6. **Query & analyze**: Use DBeaver or raw SQL for alliance selection and match strategy
 
 ## Database Schema
 
@@ -112,8 +112,8 @@ Public EPA data fetched from [Statbotics](https://www.statbotics.io/) for fantas
 ### Requirements
 
 - **Python 3.10+**
-- **customtkinter** — Modern Tkinter theme
-- **SQLite** — Built into Python
+- **customtkinter**: Modern Tkinter theme
+- **SQLite**: Built into Python
 
 ### Quick Start
 
@@ -178,11 +178,11 @@ This repository does not currently have a license. Please contact the author bef
 
 ## History Note
 
-This repository's git history was rewritten in November 2026 to remove sensitive real scouting data (including free-text scout comments about other teams) before the repository was made public. Original commit dates and messages were preserved; commits that only touched data files remain as empty commits. The `team_stats.db` file and `statbotics_db.py` script were **not** scrubbed—they contain only publicly available statistics from the Statbotics API.
+This repository's git history was rewritten in November 2026 to remove sensitive real scouting data (including free-text scout comments about other teams) before the repository was made public. Original commit dates and messages were preserved, and commits that only touched data files remain as empty commits. The `team_stats.db` file and `statbotics_db.py` script were **not** scrubbed because they contain only publicly available statistics from the Statbotics API.
 
-## Fun Fact 🏆
+## Fantasy FRC
 
-The team used the Statbotics data (`team_stats.db`) to run a fantasy FRC tournament at the hotel during the World Championship—because when you're surrounded by robots all day, why not draft some imaginary ones at night?
+The team also used the Statbotics data (`team_stats.db`) to run a fantasy FRC draft at the hotel during the World Championship.
 
 ---
 
