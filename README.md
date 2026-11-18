@@ -29,7 +29,7 @@ I first got into scouting as a freshman in 2022, learning from seniors Heath Cru
 - **Match data entry** (`GKC/match_data_entry.py`): CustomTkinter GUI for importing match scouting data
 - **Pit data entry** (`GKC/pit_data_entry`): GUI for importing pit scouting information
 - **Statbotics integration** (`statbotics_db.py`): Fetches public team statistics from the [Statbotics API](https://www.statbotics.io/)
-- **Offline-first**: No network required during competition. QR codes transfer data between tablets and the intake laptop
+- **Offline-first**: No network required during competition. QR codes transfer data from scouts' phones to the intake laptop
 - **SQL-queryable**: Strategy questions become `SELECT` statements, and DBeaver can export results for alliance selection meetings
 
 ## Screenshots
@@ -47,7 +47,7 @@ I first got into scouting as a freshman in 2022, learning from seniors Heath Cru
 
 ```mermaid
 flowchart LR
-    subgraph Scouting Tablets
+    subgraph Scout Phones
         A[Flutter Match App] --> B[QR Code]
         C[Flutter Pit App] --> D[QR Code]
     end
@@ -69,7 +69,7 @@ flowchart LR
 
 ### Data Flow
 
-1. **Scouts use Flutter apps** on tablets to record match/pit observations
+1. **Scouts use Flutter apps** on their own phones (Android or iOS) to record match/pit observations
 2. **App generates QR code** encoding all fields with `*` delimiters
 3. **Scan or paste** the QR string into the intake app's text entry
 4. **Validation**: App splits on `*` and rejects any record whose field count doesn't match the match or pit layout
